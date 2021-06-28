@@ -1,0 +1,30 @@
+<?php
+
+namespace RMValidator\Attributes\PropertyAttributes\File;
+
+use Attribute;
+use DateTime;
+use RMValidator\Attributes\Base\IAttribute;
+use RMValidator\Exceptions\DateTimeBeforeException;
+use RMValidator\Exceptions\NotADateTimeException;
+use RMValidator\Attributes\Base\BaseAttribute;
+
+
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+final class DateTimeBeforeAttribute extends BaseAttribute implements IAttribute
+{
+    public function __construct(public DateTime $before, protected ?string $errorMsg = null, protected ?string $customName = null)
+    {
+        parent::__construct($errorMsg, $customName);
+    }
+
+    public function validate(mixed $value) : void
+    {
+        if (!($value instanceof DateTime)) {
+            throw new NotADateTimeException();
+        }
+        if ($value >= $this->before) {
+            throw new DateTimeBeforeException($value, $this->before);
+        }
+    }
+}

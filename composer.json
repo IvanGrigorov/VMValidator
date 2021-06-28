@@ -1,0 +1,24 @@
+{
+    "name": "ivangrigorov/vmvalidator",
+    "type": "library",
+    "description": "Simple Request Model Validation",
+    "minimum-stability": "stable",
+    "keywords": ["Validation","Request Models", "Attributes"],
+    "homepage": "https://github.com/IvanGrigorov/PHPDI",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Grigorov",
+            "email": "ivangrigorov9@gmail.com",
+            "role": "Developer and maintainer"
+        }
+    ],
+    "require": {
+        "php": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RMValidator\\": "./RMValidator"
+        }
+    }
+}
