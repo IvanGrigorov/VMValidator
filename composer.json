@@ -4,7 +4,7 @@
     "description": "Simple Request Model Validation",
     "minimum-stability": "stable",
     "keywords": ["Validation","Request Models", "Attributes"],
-    "homepage": "https://github.com/IvanGrigorov/PHPDI",
+    "homepage": "https://github.com/IvanGrigorov/VMValidator",
     "license": "MIT",
     "authors": [
         {
