@@ -20,5 +20,8 @@
         "psr-4": {
             "RMValidator\\": "./RMValidator"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5"
     }
 }

@@ -19,7 +19,7 @@ final class CollectionAttribute extends BaseAttribute implements IAttribute
     public function validate(mixed $value) : void
     {
         if (!is_array($value)) {
-            throw new CollectionException($value, $this->expected);
+            throw new CollectionException();
         }
     }
 }

@@ -25,7 +25,7 @@ final class DateTimeEqualsAttribute extends BaseAttribute implements IAttribute
         if (!($value instanceof DateTime)) {
             throw new NotADateTimeException();
         }
-        if ($value == $same) {
+        if ($value != $same) {
             throw new DateTimeEqualsException($value, $same);
         }
     }

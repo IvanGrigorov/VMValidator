@@ -21,7 +21,7 @@ final class HasPropertyAttribute extends BaseAttribute implements IAttribute
         if (!is_object($value)) {
             throw new NotAnObjectException($value);
         }
-        if (property_exists($value, $this->propertyNameExists)) {
+        if (!property_exists($value, $this->propertyNameExists)) {
             throw new HasPropertyException($this->propertyNameExists);
         }
     }
