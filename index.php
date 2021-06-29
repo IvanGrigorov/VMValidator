@@ -1,5 +1,6 @@
 <?php
 
+use RMValidator\Attributes\PropertyAttributes\DateTime\DateTimeAfterAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileExtensionAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileSizeAttribute;
 use RMValidator\Attributes\PropertyAttributes\Numbers\RangeAttribute;
@@ -14,15 +15,15 @@ require __DIR__ . '/vendor/autoload.php';
 
 class Test {
 
-    #[MemoryProfileAttribute(memFrom: 0, memTo: 2)]
-    #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10, errorMsg:"Test", customName: "LALALA")]
+    #[DateTimeAfterAttribute(after: '30-06-2021')]
+    public function custom() {
+        return new DateTime('now');
+    }
+
+    #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10)]
     #[FileExtensionAttribute(expected:['php'])]
     public function getFile() {
-        $array = [];
-        for ($i = 0; $i < 1000000; $i++) {
-            $array[] = "yes";
-        }
-        var_dump("Tes");
+        return __FILE__;
     }
 
     #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10)]
@@ -38,7 +39,7 @@ class Test {
 $test = new Test();
 
 try {
-    MasterValidator::validate($test, new OptionsModel(excludedMethods: ['getFfile'], excludedProperties: ['fjile']));
+    MasterValidator::validate($test, new OptionsModel( excludedMethods: ['getFile'], excludedProperties: ['fisadle']));
 }
 catch(Exception $e) {
     var_dump($e);

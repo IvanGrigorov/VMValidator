@@ -1,6 +1,6 @@
 <?php
 
-namespace RMValidator\Attributes\PropertyAttributes\File;
+namespace RMValidator\Attributes\PropertyAttributes\DateTime;
 
 use Attribute;
 use DateTime;
@@ -13,18 +13,19 @@ use RMValidator\Attributes\Base\BaseAttribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
 final class DateTimeAfterAttribute extends BaseAttribute implements IAttribute
 {
-    public function __construct(public DateTime $after, protected ?string $errorMsg = null, protected ?string $customName = null)
+    public function __construct(public string $after, protected ?string $errorMsg = null, protected ?string $customName = null)
     {
         parent::__construct($errorMsg, $customName);
     }
 
     public function validate(mixed $value) : void
     {
+        $afterDate = new DateTime($this->after);
         if (!($value instanceof DateTime)) {
             throw new NotADateTimeException();
         }
-        if ($value <= $this->after) {
-            throw new DateTimeAfterException($value, $this->after);
+        if ($value <= $afterDate) {
+            throw new DateTimeAfterException($value, $afterDate);
         }
     }
 }
