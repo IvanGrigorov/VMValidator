@@ -22,10 +22,10 @@ final class AllAttribute extends BaseAttribute implements IAttribute {
         if (!is_array($value)) {
             throw new CollectionException();
         }
-        if (count(array_unique($value)) == 1) {
+        if (count(array_unique($value)) > 1) {
             throw new AllException();
         }
-        if (!empty($this->expected) && in_array($this->expected, $value)) {
+        if (!empty($this->expected) && !in_array($this->expected, $value)) {
             throw new AnyException();
         }
     }

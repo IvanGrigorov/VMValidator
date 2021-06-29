@@ -21,7 +21,7 @@ final class AnyAttribute extends BaseAttribute implements IAttribute {
         if (!is_array($value)) {
             throw new CollectionException();
         }
-        if (in_array($this->expected, $value)) {
+        if (!in_array($this->expected, $value)) {
             throw new AnyException();
         }
     }

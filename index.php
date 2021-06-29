@@ -1,8 +1,12 @@
 <?php
 
+use RMValidator\Attributes\PropertyAttributes\Collection\AllAttribute;
+use RMValidator\Attributes\PropertyAttributes\Collection\AnyAttribute;
+use RMValidator\Attributes\PropertyAttributes\Collection\UniqueAttribute;
 use RMValidator\Attributes\PropertyAttributes\DateTime\DateTimeAfterAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileExtensionAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileSizeAttribute;
+use RMValidator\Attributes\PropertyAttributes\Global\SameAttribute;
 use RMValidator\Attributes\PropertyAttributes\Numbers\RangeAttribute;
 use RMValidator\Attributes\PropertyAttributes\Profile\MemoryProfileAttribute;
 use RMValidator\Attributes\PropertyAttributes\Profile\TimeProfileAttribute;
@@ -15,9 +19,17 @@ require __DIR__ . '/vendor/autoload.php';
 
 class Test {
 
-    #[DateTimeAfterAttribute(after: '30-06-2021')]
+
+    private $test;
+
+    public function __construct()
+    {
+        $this->test = new ArrayObject();
+    }
+
+    #[UniqueAttribute()]
     public function custom() {
-        return new DateTime('now');
+        return ['asd', 'asdk'];
     }
 
     #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10)]
