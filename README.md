@@ -4,6 +4,10 @@ Hello, this is simple attribute validation for PHP Models, based on the new feat
 
 Use just [three rows](https://github.com/IvanGrigorov/VMValidator/blob/2139877c4ca6ae01f60729db2d83f9c5e087096d/index.php), alogside some [attributes](https://github.com/IvanGrigorov/VMValidator/blob/2139877c4ca6ae01f60729db2d83f9c5e087096d/index.php):
 
+# Installation
+
+```composer require ivangrigorov/vmvalidator```
+
 
 # Options
 

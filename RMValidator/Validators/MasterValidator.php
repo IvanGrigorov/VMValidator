@@ -6,6 +6,8 @@ use Exception;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
+use RMValidator\Attributes\Base\IAttribute;
+use RMValidator\Attributes\Base\IProfileAttribute;
 use RMValidator\Enums\ValidationOrderEnum;
 use RMValidator\Exceptions\ValidationMethodException;
 use RMValidator\Exceptions\ValidationPropertyException;
@@ -67,7 +69,13 @@ final class MasterValidator {
             foreach ($attributes as $attribute) {
                 try {
                     $validationAttribute = $attribute->newInstance();
-                    $validationAttribute->validate($target->$methodName());
+                    if ($validationAttribute instanceof IProfileAttribute && 
+                        $validationAttribute instanceof IAttribute) {
+                        $validationAttribute->validate(fn() => $target->$methodName());
+                    }
+                    else {
+                        $validationAttribute->validate($target->$methodName());
+                    }
                 }
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
