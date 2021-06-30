@@ -1,15 +1,9 @@
 <?php
 
-use RMValidator\Attributes\PropertyAttributes\Collection\AllAttribute;
-use RMValidator\Attributes\PropertyAttributes\Collection\AnyAttribute;
 use RMValidator\Attributes\PropertyAttributes\Collection\UniqueAttribute;
-use RMValidator\Attributes\PropertyAttributes\DateTime\DateTimeAfterAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileExtensionAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileSizeAttribute;
-use RMValidator\Attributes\PropertyAttributes\Global\SameAttribute;
 use RMValidator\Attributes\PropertyAttributes\Numbers\RangeAttribute;
-use RMValidator\Attributes\PropertyAttributes\Profile\MemoryProfileAttribute;
-use RMValidator\Attributes\PropertyAttributes\Profile\TimeProfileAttribute;
 use RMValidator\Attributes\PropertyAttributes\Strings\StringContainsAttribute;
 use RMValidator\Options\OptionsModel;
 use RMValidator\Validators\MasterValidator;
@@ -18,14 +12,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 
 class Test {
-
-
-    private $test;
-
-    public function __construct()
-    {
-        $this->test = new ArrayObject();
-    }
 
     #[UniqueAttribute()]
     public function custom() {
@@ -48,10 +34,11 @@ class Test {
     #[RangeAttribute(from:10, to:30)]
     public int $prop = 40;
 }
+
 $test = new Test();
 
 try {
-    MasterValidator::validate($test, new OptionsModel( excludedMethods: ['getFile'], excludedProperties: ['fisadle']));
+    MasterValidator::validate($test, new OptionsModel( excludedMethods: ['getFile'], excludedProperties: ['file']));
 }
 catch(Exception $e) {
     var_dump($e);

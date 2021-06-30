@@ -7,6 +7,43 @@ Hello, this is simple attribute validation for PHP Models, based on the new feat
 
 Use just [three rows](https://github.com/IvanGrigorov/VMValidator/blob/2139877c4ca6ae01f60729db2d83f9c5e087096d/index.php), alogside some [attributes](https://github.com/IvanGrigorov/VMValidator/blob/2139877c4ca6ae01f60729db2d83f9c5e087096d/index.php):
 
+# Example 
+
+```
+class Test {
+
+    #[UniqueAttribute()]
+    public function custom() {
+        return ['asd', 'asdk'];
+    }
+
+    #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10)]
+    #[FileExtensionAttribute(expected:['php'])]
+    public function getFile() {
+        return __FILE__;
+    }
+
+    #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10)]
+    #[FileExtensionAttribute(expected:['php'])]
+    public string $file = __FILE__;
+
+    #[StringContainsAttribute(needle:"asd")]
+    public string $string = "23asd";
+
+    #[RangeAttribute(from:10, to:30)]
+    public int $prop = 40;
+}
+
+$test = new Test();
+
+try {
+    MasterValidator::validate($test, new OptionsModel( excludedMethods: ['getFile'], excludedProperties: ['file']));
+}
+catch(Exception $e) {
+    var_dump($e);
+}
+```
+
 # Installation
 
 ```composer require ivangrigorov/vmvalidator```
