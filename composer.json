@@ -3,7 +3,11 @@
     "type": "library",
     "description": "Simple Request Model Validation",
     "minimum-stability": "stable",
-    "keywords": ["Validation","Request Models", "Attributes"],
+    "keywords": [
+        "Validation",
+        "Request Models",
+        "Attributes"
+    ],
     "homepage": "https://github.com/IvanGrigorov/VMValidator",
     "license": "MIT",
     "authors": [
@@ -22,6 +26,9 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "9.5"
+        "phpunit/phpunit": "9.5",
+        "codeception/codeception": "^4.1",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/module-asserts": "^1.0.0"
     }
 }
