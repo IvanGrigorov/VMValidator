@@ -2,6 +2,8 @@
 
 ![](https://badgen.net/badge/code%20coverage/75%20%25/green?icon=codecov) ![](https://badgen.net/badge/build/passing/green?icon=status) ![](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label)
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ivangrigorov)
+
 
 Hello, this is simple attribute validation for PHP Models, based on the new features, presented in [PHP 8](https://www.php.net/releases/8.0/en.php) It works as a standalone and can be use in custom projects or in libraries like Symfony and Laravel.
 
