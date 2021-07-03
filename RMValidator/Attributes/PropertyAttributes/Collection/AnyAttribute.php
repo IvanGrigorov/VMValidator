@@ -8,7 +8,7 @@ use RMValidator\Exceptions\AnyException;
 use RMValidator\Exceptions\CollectionException;
 use RMValidator\Attributes\Base\BaseAttribute;
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class AnyAttribute extends BaseAttribute implements IAttribute {
 
     public function __construct(public mixed $expected, protected ?string $errorMsg = null, protected ?string $customName = null)

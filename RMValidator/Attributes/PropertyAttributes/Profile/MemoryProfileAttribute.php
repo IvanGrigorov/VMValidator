@@ -10,7 +10,7 @@ use RMValidator\Exceptions\MemoryConusumingException;
 use RMValidator\Exceptions\NotCallableException;
 use RMValidator\Exceptions\TimeConusumingException;
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class MemoryProfileAttribute extends BaseAttribute implements IAttribute, IProfileAttribute {
 
     public function __construct(public int $memFrom, public int $memTo, protected ?string $errorMsg = null, protected ?string $customName = null)

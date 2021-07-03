@@ -56,6 +56,8 @@ In what order to validate the classes (methods or properties first),  and what t
 # Extras
 
  - [x] Lots of validations
+ - [x] Works with private properties and methods
+ - [x] Works with constructor promotion
  - [x] Memory and time profiling
  - [x] Custom error messages
  - [x] Custom property and method names for the exceptions

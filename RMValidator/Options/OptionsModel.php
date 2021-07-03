@@ -6,7 +6,7 @@ use RMValidator\Enums\ValidationOrderEnum;
 
 final class OptionsModel {
 
-    public function __construct(private array $orderOfValidation = [ValidationOrderEnum::METHODS, ValidationOrderEnum::PROPERTIES],
+    public function __construct(private array $orderOfValidation = [ValidationOrderEnum::METHODS, ValidationOrderEnum::PROPERTIES, ValidationOrderEnum::CONSTANTS],
                                 private array $excludedMethods = [],
                                 private array $excludedProperties = [],)
     {}

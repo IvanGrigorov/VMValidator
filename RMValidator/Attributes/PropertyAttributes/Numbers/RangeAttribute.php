@@ -9,7 +9,7 @@ use RMValidator\Exceptions\RangeException;
 use RMValidator\Attributes\Base\BaseAttribute;
 
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class RangeAttribute extends BaseAttribute implements IAttribute
 {
     public function __construct(public float $from, public float $to, protected ?string $errorMsg = null, protected ?string $customName = null)

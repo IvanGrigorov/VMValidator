@@ -9,7 +9,7 @@ use RMValidator\Exceptions\NotAFileException;
 use RMValidator\Attributes\Base\BaseAttribute;
 
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class FileSizeAttribute extends BaseAttribute implements IAttribute
 {
     public function __construct(public int $fileSizeLowest, public int $fileSizeBiggest, protected ?string $errorMsg = null, protected ?string $customName = null)

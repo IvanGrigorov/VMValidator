@@ -9,7 +9,7 @@ use RMValidator\Exceptions\NotANumberException;
 use RMValidator\Attributes\Base\BaseAttribute;
 use RMValidator\Exceptions\LowerException;
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class LowerAttribute extends BaseAttribute implements IAttribute
 {
     public function __construct(public float $lowerThan, protected ?string $errorMsg = null, protected ?string $customName = null)

@@ -4,6 +4,7 @@ namespace RMValidator\Validators;
 
 use Exception;
 use ReflectionClass;
+use ReflectionClassConstant;
 use ReflectionMethod;
 use ReflectionProperty;
 use RMValidator\Attributes\Base\IAttribute;
@@ -18,8 +19,9 @@ final class MasterValidator {
     public static function validate(object $target, OptionsModel $optionsModel) {
         $className = get_class($target);
         $reflectionClass = new ReflectionClass($className);
-        $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
-        $properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
+        $methods = $reflectionClass->getMethods();
+        $properties = $reflectionClass->getProperties();
+        $constants = $reflectionClass->getConstants();
         foreach($optionsModel->getOrderOfValidation() as $order) {
             switch($order) {
                 case ValidationOrderEnum::METHODS:
@@ -27,6 +29,9 @@ final class MasterValidator {
                     break;
                 case ValidationOrderEnum::PROPERTIES:
                     MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties());
+                    break;
+                case ValidationOrderEnum::CONSTANTS:
+                    MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties());
                     break;
 
             }
@@ -58,6 +63,30 @@ final class MasterValidator {
         }
     }
 
+    private static function validateConstants(array $constants, string $className, object $target, array $excludedProperties) {
+        foreach ($constants as $key => $value) {
+            $constantName = $key;
+            if (in_array($constantName, $excludedProperties)) {
+                continue;
+            }
+            $reflectionClassConstant = new ReflectionClassConstant($className, $constantName);
+            $attributes = $reflectionClassConstant->getAttributes();
+            foreach ($attributes as $attribute) {
+                try {
+                    $validationAttribute = $attribute->newInstance();
+                    $validationAttribute->validate($value);
+                }
+                catch(Exception $e) {
+                    $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
+                    $attributeName = end($attributeNameSplitted);
+                    throw new ValidationPropertyException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $constantName,
+                                                          $attributeName,
+                                                          ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+                }
+            }
+        }
+    }
+
     private static function validateMethods(array $methods, string $className, object $target, array $excludedMethods) {
         foreach ($methods as $method) {
             $methodName = $method->getName();
@@ -65,16 +94,17 @@ final class MasterValidator {
                 continue;
             }
             $reflectionMethod = new ReflectionMethod($className, $methodName);
+            $reflectionMethod->setAccessible(true);
             $attributes = $reflectionMethod->getAttributes();
             foreach ($attributes as $attribute) {
                 try {
                     $validationAttribute = $attribute->newInstance();
                     if ($validationAttribute instanceof IProfileAttribute && 
                         $validationAttribute instanceof IAttribute) {
-                        $validationAttribute->validate(fn() => $target->$methodName());
+                        $validationAttribute->validate(fn() => $reflectionMethod->invoke($target, null));
                     }
                     else {
-                        $validationAttribute->validate($target->$methodName());
+                        $validationAttribute->validate($reflectionMethod->invoke($target, null));
                     }
                 }
                 catch(Exception $e) {
