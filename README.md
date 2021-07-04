@@ -12,7 +12,33 @@ Use just [three rows](https://github.com/IvanGrigorov/VMValidator/blob/2139877c4
 # Example 
 
 ```
+<?php
+
+use RMValidator\Attributes\PropertyAttributes\Collection\UniqueAttribute;
+use RMValidator\Attributes\PropertyAttributes\File\FileExtensionAttribute;
+use RMValidator\Attributes\PropertyAttributes\File\FileSizeAttribute;
+use RMValidator\Attributes\PropertyAttributes\Numbers\RangeAttribute;
+use RMValidator\Attributes\PropertyAttributes\Object\NestedAttribute;
+use RMValidator\Attributes\PropertyAttributes\Strings\StringContainsAttribute;
+use RMValidator\Enums\ValidationOrderEnum;
+use RMValidator\Options\OptionsModel;
+use RMValidator\Validators\MasterValidator;
+
+require __DIR__ . '/vendor/autoload.php';
+
+
 class Test {
+
+    public function __construct(
+        #[RangeAttribute(from:10, to:50)]
+        #[RangeAttribute(from:10, to:30)]
+        public int $param)
+    {
+        
+    }
+
+    #[RangeAttribute(from:10, to:30)]
+    const propTest = 40;
 
     #[UniqueAttribute()]
     public function custom() {
@@ -21,7 +47,7 @@ class Test {
 
     #[FileSizeAttribute(fileSizeBiggest: 20, fileSizeLowest: 10)]
     #[FileExtensionAttribute(expected:['php'])]
-    public function getFile() {
+    private function getFile() {
         return __FILE__;
     }
 
@@ -36,10 +62,25 @@ class Test {
     public int $prop = 40;
 }
 
-$test = new Test();
+class UpperTest {
+
+    #[NestedAttribute(excludedProperties:['param'])]
+    private Test $test;
+
+    public function __construct(Test $test) {
+        $this->test = $test;
+    }
+}
+
+$test = new Test(40);
 
 try {
-    MasterValidator::validate($test, new OptionsModel( excludedMethods: ['getFile'], excludedProperties: ['file']));
+    MasterValidator::validate(new UpperTest($test), 
+    new OptionsModel(orderOfValidation: [ValidationOrderEnum::PROPERTIES, 
+                                         ValidationOrderEnum::METHODS,
+                                         ValidationOrderEnum::CONSTANTS], 
+                     excludedMethods: ['getFile'], 
+                     excludedProperties: ['file']));
 }
 catch(Exception $e) {
     var_dump($e);
@@ -58,6 +99,8 @@ In what order to validate the classes (methods or properties first),  and what t
 # Extras
 
  - [x] Lots of validations
+ - [x] Supprots also nested object validation
+ - [x] Repeatable validation attributes
  - [x] Works with private properties and methods
  - [x] Works with constructor promotion
  - [x] Memory and time profiling

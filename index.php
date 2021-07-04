@@ -4,6 +4,7 @@ use RMValidator\Attributes\PropertyAttributes\Collection\UniqueAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileExtensionAttribute;
 use RMValidator\Attributes\PropertyAttributes\File\FileSizeAttribute;
 use RMValidator\Attributes\PropertyAttributes\Numbers\RangeAttribute;
+use RMValidator\Attributes\PropertyAttributes\Object\NestedAttribute;
 use RMValidator\Attributes\PropertyAttributes\Strings\StringContainsAttribute;
 use RMValidator\Enums\ValidationOrderEnum;
 use RMValidator\Options\OptionsModel;
@@ -15,6 +16,7 @@ require __DIR__ . '/vendor/autoload.php';
 class Test {
 
     public function __construct(
+        #[RangeAttribute(from:10, to:50)]
         #[RangeAttribute(from:10, to:30)]
         public int $param)
     {
@@ -46,10 +48,20 @@ class Test {
     public int $prop = 40;
 }
 
+class UpperTest {
+
+    #[NestedAttribute(excludedProperties:['param'])]
+    private Test $test;
+
+    public function __construct(Test $test) {
+        $this->test = $test;
+    }
+}
+
 $test = new Test(40);
 
 try {
-    MasterValidator::validate($test, 
+    MasterValidator::validate(new UpperTest($test), 
     new OptionsModel(orderOfValidation: [ValidationOrderEnum::PROPERTIES, 
                                          ValidationOrderEnum::METHODS,
                                          ValidationOrderEnum::CONSTANTS], 

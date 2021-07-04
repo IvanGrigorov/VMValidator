@@ -9,7 +9,7 @@ use RMValidator\Exceptions\NotAnObjectException;
 use RMValidator\Attributes\Base\BaseAttribute;
 
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class HasPropertyAttribute extends BaseAttribute implements IAttribute
 {
     public function __construct(public string $propertyNameExists, protected ?string $errorMsg = null, protected ?string $customName = null)

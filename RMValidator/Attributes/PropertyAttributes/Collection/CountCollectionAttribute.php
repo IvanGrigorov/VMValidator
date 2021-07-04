@@ -9,7 +9,7 @@ use RMValidator\Exceptions\CountCollectionException;
 use RMValidator\Attributes\Base\BaseAttribute;
 
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class CountCollectionAttribute extends BaseAttribute implements IAttribute
 {
     public function __construct(public int $from, public int $to, protected ?string $errorMsg = null, protected ?string $customName = null)

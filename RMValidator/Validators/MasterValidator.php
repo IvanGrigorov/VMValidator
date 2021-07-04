@@ -46,11 +46,12 @@ final class MasterValidator {
                 continue;
             }
             $reflectionProperty = new ReflectionProperty($className, $propertyName);
+            $reflectionProperty->setAccessible(true);
             $attributes = $reflectionProperty->getAttributes();
             foreach ($attributes as $attribute) {
                 try {
                     $validationAttribute = $attribute->newInstance();
-                    $validationAttribute->validate($target->$propertyName);
+                    $validationAttribute->validate($reflectionProperty->getValue($target));
                 }
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
