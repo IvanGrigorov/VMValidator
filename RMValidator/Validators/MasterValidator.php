@@ -16,7 +16,8 @@ use RMValidator\Options\OptionsModel;
 
 final class MasterValidator {
 
-    public static function validate(object $target, OptionsModel $optionsModel) {
+    public static function validate(object $target, OptionsModel $passedOptionsModel = null) {
+        $optionsModel = (empty($passedOptionsModel)) ? new OptionsModel() : $passedOptionsModel;
         $className = get_class($target);
         $reflectionClass = new ReflectionClass($className);
         $methods = $reflectionClass->getMethods();
