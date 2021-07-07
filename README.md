@@ -100,6 +100,7 @@ In what order to validate the classes (methods or properties first),  and what t
 
  - [x] Lots of validations
  - [x] Supprots also nested object validation
+ - [x] Nullable check
  - [x] Repeatable validation attributes
  - [x] Works with private properties and methods
  - [x] Works with constructor promotion
