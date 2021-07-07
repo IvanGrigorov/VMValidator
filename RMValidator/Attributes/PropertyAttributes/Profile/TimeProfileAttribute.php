@@ -12,9 +12,9 @@ use RMValidator\Exceptions\TimeConusumingException;
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class TimeProfileAttribute extends BaseAttribute implements IAttribute, IProfileAttribute {
 
-    public function __construct(public int $timeFrom, public int $timeTo, protected ?string $errorMsg = null, protected ?string $customName = null)
+    public function __construct(public int $timeFrom, public int $timeTo, protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false)
     {
-        parent::__construct($errorMsg, $customName);
+        parent::__construct($errorMsg, $customName, $nullable);
     }
 
     public function validate(mixed $value) : void

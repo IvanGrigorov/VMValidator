@@ -3,6 +3,7 @@
 namespace RMValidator\Attributes\PropertyAttributes\Object;
 
 use Attribute;
+use RMValidator\Exceptions\NotNullableException;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Attributes\Base\BaseAttribute;
 use RMValidator\Enums\ValidationOrderEnum;
@@ -17,13 +18,19 @@ final class NestedAttribute extends BaseAttribute implements IAttribute
         protected array $excludedMethods = [],
         protected array $excludedProperties = [],
         protected ?string $errorMsg = null, 
-        protected ?string $customName = null)
+        protected ?string $customName = null, protected ?bool $nullable = false)
     {
-        parent::__construct($errorMsg, $customName);
+        parent::__construct($errorMsg, $customName, $nullable);
     }
 
     public function validate(mixed $value) : void
     {
+        if ($value == null) {
+            if (!$this->checkNullable($value)) {
+                throw new NotNullableException();
+            }
+            return;
+        }
         MasterValidator::validate($value, new OptionsModel($this->orderOValidation, $this->excludedMethods, $this->excludedProperties));
     }
 }
