@@ -20,7 +20,7 @@ final class FileSizeAttribute extends BaseAttribute implements IAttribute
 
     public function validate(mixed $value) : void
     {
-        if ($value == null) {
+        if ($value === null) {
             if (!$this->checkNullable($value)) {
                 throw new NotNullableException();
             }

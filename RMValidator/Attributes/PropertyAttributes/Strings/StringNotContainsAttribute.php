@@ -21,7 +21,7 @@ final class StringNotContainsAttribute extends BaseAttribute implements IAttribu
 
     public function validate(mixed $value) : void
     {
-        if ($value == null) {
+        if ($value === null) {
             if (!$this->checkNullable($value)) {
                 throw new NotNullableException();
             }

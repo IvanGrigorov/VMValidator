@@ -7,6 +7,7 @@ use RMValidator\Exceptions\NotNullableException;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Attributes\Base\BaseAttribute;
 use RMValidator\Enums\ValidationOrderEnum;
+use RMValidator\Exceptions\ObjectException;
 use RMValidator\Options\OptionsModel;
 use RMValidator\Validators\MasterValidator;
 
@@ -25,11 +26,14 @@ final class NestedAttribute extends BaseAttribute implements IAttribute
 
     public function validate(mixed $value) : void
     {
-        if ($value == null) {
+        if ($value === null) {
             if (!$this->checkNullable($value)) {
                 throw new NotNullableException();
             }
             return;
+        }
+        if (!is_object($value)) {
+            throw new ObjectException();
         }
         MasterValidator::validate($value, new OptionsModel($this->orderOValidation, $this->excludedMethods, $this->excludedProperties));
     }

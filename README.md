@@ -1,6 +1,6 @@
 # VMValidator
 
-![](https://badgen.net/badge/code%20coverage/75%20%25/green?icon=codecov) ![](https://badgen.net/badge/build/passing/green?icon=status) ![](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label)
+![](https://badgen.net/badge/code%20coverage/70%20%25/green?icon=codecov) ![](https://badgen.net/badge/build/passing/green?icon=status) ![](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&label)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/ivangrigorov)
 
@@ -100,6 +100,7 @@ In what order to validate the classes (methods or properties first),  and what t
 
  - [x] Lots of validations
  - [x] Supprots also nested object validation
+ - [x] Supprots also collection item types and collection item validations
  - [x] Repeatable validation attributes
  - [x] Works with private properties and methods
  - [x] Works with constructor promotion
