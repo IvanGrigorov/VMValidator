@@ -101,6 +101,7 @@ In what order to validate the classes (methods or properties first),  and what t
  - [x] Lots of validations
  - [x] Supprots also nested object validation
  - [x] Supprots also collection item types and collection item validations
+ - [x] Supprots also custom validations*
  - [x] Nullable check
  - [x] Repeatable validation attributes
  - [x] Works with private properties and methods
@@ -109,6 +110,23 @@ In what order to validate the classes (methods or properties first),  and what t
  - [x] Custom error messages
  - [x] Custom property and method names for the exceptions
 
+### *The custom validation should be declared as static in a validation class
+```
+class Validation {
+
+    static function validate($valueToTest, $arg1) : bool {
+        return $valueToTest == $arg1;
+    }
+}
+```
+The method should always return boolean: ```true``` for valid input and ```false``` for invalid.
+
+In the declaration:
+```
+    #[CustomAttribute(staticClassName: 'Validation', staticMethodName: 'validate', args: [2])]
+
+```
+You can pass additional arguments to use in the validation function, but the first parameter is always the value to be tested.
 # Support
 
  - Request a new validation
