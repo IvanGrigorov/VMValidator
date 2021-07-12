@@ -11,7 +11,7 @@ Use just [three rows](https://github.com/IvanGrigorov/VMValidator/blob/2139877c4
 
 # Example 
 
-```
+```php
 <?php
 
 use RMValidator\Attributes\PropertyAttributes\Collection\UniqueAttribute;
@@ -27,8 +27,8 @@ use RMValidator\Validators\MasterValidator;
 require __DIR__ . '/vendor/autoload.php';
 
 
-class Test {
-
+class Test 
+{
     public function __construct(
         #[RangeAttribute(from:10, to:50)]
         #[RangeAttribute(from:10, to:30)]
@@ -62,8 +62,8 @@ class Test {
     public int $prop = 40;
 }
 
-class UpperTest {
-
+class UpperTest
+{
     #[NestedAttribute(excludedProperties:['param'])]
     private Test $test;
 
@@ -81,15 +81,16 @@ try {
                                          ValidationOrderEnum::CONSTANTS], 
                      excludedMethods: ['getFile'], 
                      excludedProperties: ['file']));
-}
-catch(Exception $e) {
+} catch(Exception $e) {
     var_dump($e);
 }
 ```
 
 # Installation
 
-```composer require ivangrigorov/vmvalidator```
+```bash
+composer require ivangrigorov/vmvalidator
+```
 
 
 # Options
@@ -111,10 +112,11 @@ In what order to validate the classes (methods or properties first),  and what t
  - [x] Custom property and method names for the exceptions
 
 ### *The custom validation should be declared as static in a validation class
-```
-class Validation {
-
-    static function validate($valueToTest, $arg1) : bool {
+```php
+class Validation 
+{
+    public static function validate($valueToTest, $arg1): bool 
+    {
         return $valueToTest == $arg1;
     }
 }
@@ -122,9 +124,8 @@ class Validation {
 The method should always return boolean: ```true``` for valid input and ```false``` for invalid.
 
 In the declaration:
-```
-    #[CustomAttribute(staticClassName: Validation::class, staticMethodName: 'validate', args: [2])]
-
+```php
+#[CustomAttribute(staticClassName: Validation::class, staticMethodName: 'validate', args: [2])]
 ```
 You can pass additional arguments to use in the validation function, but the first parameter is always the value to be tested.
 # Support
