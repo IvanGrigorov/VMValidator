@@ -123,7 +123,7 @@ The method should always return boolean: ```true``` for valid input and ```false
 
 In the declaration:
 ```
-    #[CustomAttribute(staticClassName: 'Validation', staticMethodName: 'validate', args: [2])]
+    #[CustomAttribute(staticClassName: Validation::class, staticMethodName: 'validate', args: [2])]
 
 ```
 You can pass additional arguments to use in the validation function, but the first parameter is always the value to be tested.
