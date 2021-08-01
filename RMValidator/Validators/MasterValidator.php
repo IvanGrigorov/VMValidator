@@ -10,6 +10,7 @@ use ReflectionProperty;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Attributes\Base\IProfileAttribute;
 use RMValidator\Enums\ValidationOrderEnum;
+use RMValidator\Exceptions\OrException;
 use RMValidator\Exceptions\ValidationMethodException;
 use RMValidator\Exceptions\ValidationPropertyException;
 use RMValidator\Options\OptionsModel;
@@ -26,13 +27,13 @@ final class MasterValidator {
         foreach($optionsModel->getOrderOfValidation() as $order) {
             switch($order) {
                 case ValidationOrderEnum::METHODS:
-                    MasterValidator::validateMethods($methods, $className, $target, $optionsModel->getExcludedMethods());
+                    MasterValidator::validateMethods($methods, $className, $target, $optionsModel->getExcludedMethods(), $passedOptionsModel->getOrAttributes());
                     break;
                 case ValidationOrderEnum::PROPERTIES:
-                    MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties());
+                    MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes());
                     break;
                 case ValidationOrderEnum::CONSTANTS:
-                    MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties());
+                    MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes());
                     break;
 
             }
@@ -40,7 +41,8 @@ final class MasterValidator {
 
     }
 
-    private static function validateProperties(array $properties, string $className, object $target, array $excludedProperties) {
+    private static function validateProperties(array $properties, string $className, object $target, array $excludedProperties, array $orAttributes) {
+        $orAttributesToValidate = [];
         foreach ($properties as $property) {
             $propertyName = $property->getName();
             if (in_array($propertyName, $excludedProperties)) {
@@ -52,7 +54,16 @@ final class MasterValidator {
             foreach ($attributes as $attribute) {
                 try {
                     $validationAttribute = $attribute->newInstance();
-                    $validationAttribute->validate($reflectionProperty->getValue($target));
+                    if (!empty($validationAttribute->getCustomAttrName()) && 
+                        in_array($validationAttribute->getCustomAttrName(), $orAttributes)) {
+                        $orAttributesToValidate[] = [
+                            'attr' => $validationAttribute,
+                            'value' => $reflectionProperty->getValue($target)
+                        ];
+                    }
+                    else {
+                        $validationAttribute->validate($reflectionProperty->getValue($target));
+                    }
                 }
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
@@ -62,10 +73,14 @@ final class MasterValidator {
                                                           ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
                 }
             }
+            if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
+                throw new OrException($propertyName);
+            }
         }
     }
 
-    private static function validateConstants(array $constants, string $className, object $target, array $excludedProperties) {
+    private static function validateConstants(array $constants, string $className, object $target, array $excludedProperties, array $orAttributes) {
+        $orAttributesToValidate = [];
         foreach ($constants as $key => $value) {
             $constantName = $key;
             if (in_array($constantName, $excludedProperties)) {
@@ -76,7 +91,16 @@ final class MasterValidator {
             foreach ($attributes as $attribute) {
                 try {
                     $validationAttribute = $attribute->newInstance();
-                    $validationAttribute->validate($value);
+                    if (!empty($validationAttribute->getCustomAttrName()) && 
+                        in_array($validationAttribute->getCustomAttrName(), $orAttributes)) {
+                        $orAttributesToValidate[] = [
+                            'attr' => $validationAttribute,
+                            'value' => $value
+                        ];
+                    }
+                    else {
+                        $validationAttribute->validate($value);
+                    }
                 }
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
@@ -86,10 +110,14 @@ final class MasterValidator {
                                                           ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
                 }
             }
+            if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
+                throw new OrException($constantName);
+            }
         }
     }
 
-    private static function validateMethods(array $methods, string $className, object $target, array $excludedMethods) {
+    private static function validateMethods(array $methods, string $className, object $target, array $excludedMethods, array $orAttributes) {
+        $orAttributesToValidate = [];
         foreach ($methods as $method) {
             $methodName = $method->getName();
             if (in_array($methodName, $excludedMethods)) {
@@ -103,10 +131,28 @@ final class MasterValidator {
                     $validationAttribute = $attribute->newInstance();
                     if ($validationAttribute instanceof IProfileAttribute && 
                         $validationAttribute instanceof IAttribute) {
-                        $validationAttribute->validate(fn() => $reflectionMethod->invoke($target, null));
+                        if (!empty($validationAttribute->getCustomAttrName()) && 
+                            in_array($validationAttribute->getCustomAttrName(), $orAttributes)) {
+                            $orAttributesToValidate[] = [
+                                'attr' => $validationAttribute,
+                                'value' => fn() => $reflectionMethod->invoke($target, null)
+                            ];
+                        }
+                        else {
+                            $validationAttribute->validate(fn() => $reflectionMethod->invoke($target, null));
+                        }
                     }
                     else {
-                        $validationAttribute->validate($reflectionMethod->invoke($target, null));
+                        if (!empty($validationAttribute->getCustomAttrName()) && 
+                            in_array($validationAttribute->getCustomAttrName(), $orAttributes)) {
+                            $orAttributesToValidate[] = [
+                                'attr' => $validationAttribute,
+                                'value' => fn() => $reflectionMethod->invoke($target, null)
+                            ];
+                        }
+                        else {
+                            $validationAttribute->validate($reflectionMethod->invoke($target, null));
+                        }
                     }
                 }
                 catch(Exception $e) {
@@ -117,6 +163,22 @@ final class MasterValidator {
                                                         ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
                 }
             }
+            if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
+                throw new OrException($methodName);
+            }
         }
+    }
+
+    private static function validateOrAttributes(array $orAttributes) : ?string {
+        $failedValidations = 0;
+        foreach($orAttributes as $attribute) {
+            try {
+                $attribute['attr']->validate($attribute['value']);
+            }
+            catch(Exception $e) {
+                $failedValidations++;
+            }
+        }
+        return $failedValidations != count($orAttributes);
     }
 }

@@ -21,12 +21,13 @@ final class NestedCollectionAttribute extends BaseAttribute implements IAttribut
         protected array $orderOValidation = [ValidationOrderEnum::PROPERTIES, ValidationOrderEnum::METHODS, ValidationOrderEnum::CONSTANTS],
         protected array $excludedMethods = [],
         protected array $excludedProperties = [],
+        protected array $orAttributes = [],
         private bool $isEmptyValid = true,
         protected ?string $errorMsg = null,
         protected ?string $customName = null,
-        protected ?bool $nullable = false)
+        protected ?bool $nullable = false, protected ?string $name = null)
     {
-        parent::__construct($errorMsg, $customName, $nullable);
+        parent::__construct($errorMsg, $customName, $nullable, $name);
     }
 
     public function validate(mixed $value) : void
@@ -53,7 +54,8 @@ final class NestedCollectionAttribute extends BaseAttribute implements IAttribut
             MasterValidator::validate($item, new OptionsModel(
                                                 orderOfValidation: $this->orderOValidation,
                                                 excludedMethods: $this->excludedMethods,
-                                                excludedProperties: $this->excludedProperties));
+                                                excludedProperties: $this->excludedProperties,
+                                                orAttributes: $this->orAttributes));
         }
     }
 }

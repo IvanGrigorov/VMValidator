@@ -102,6 +102,7 @@ In what order to validate the classes (methods or properties first),  and what t
  - [x] Supprots also nested object validation
  - [x] Supprots also collection item types and collection item validations
  - [x] Supprots also custom validations*
+ - [x] Supprots also or validations*
  - [x] Nullable check
  - [x] Repeatable validation attributes
  - [x] Works with private properties and methods
@@ -127,6 +128,19 @@ In the declaration:
 
 ```
 You can pass additional arguments to use in the validation function, but the first parameter is always the value to be tested.
+
+
+### *The or validation uses custom attribute names
+```
+    #[RangeAttribute(from:10, to:30, name: "orOne")]
+    #[RangeAttribute(from:10, to:40, name: "orTwo")]
+    const tttt = 40;
+```
+
+```
+    MasterValidator::validate($test, new OptionsModel(orAttributes: ['orOne', 'orTwo']));
+
+```
 # Support
 
  - Request a new validation

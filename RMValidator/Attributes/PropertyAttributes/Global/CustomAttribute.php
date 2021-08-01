@@ -20,9 +20,9 @@ final class CustomAttribute extends BaseAttribute implements IAttribute
         private array $args,
         protected ?string $errorMsg = null,
         protected ?string $customName = null,
-        protected ?bool $nullable = false)
+        protected ?bool $nullable = false, protected ?string $name = null)
     {
-        parent::__construct($errorMsg, $customName, $nullable);
+        parent::__construct($errorMsg, $customName, $nullable, $name);
     }
 
     public function validate(mixed $value) : void

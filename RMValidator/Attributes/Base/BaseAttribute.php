@@ -4,7 +4,7 @@ namespace RMValidator\Attributes\Base;
 
 abstract class BaseAttribute implements IAttribute {
 
-    public function __construct(protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false)
+    public function __construct(protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null)
     {
 
     }
@@ -15,6 +15,10 @@ abstract class BaseAttribute implements IAttribute {
 
     public function getCustomName() : ?string{
         return $this->customName;
+    }
+
+    public function getCustomAttrName() : ?string{
+        return $this->name;
     }
 
 

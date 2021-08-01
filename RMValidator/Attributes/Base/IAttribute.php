@@ -10,4 +10,6 @@ interface IAttribute {
 
     public function getCustomName() : ?string;
 
+    public function getCustomAttrName() : ?string;
+
 }

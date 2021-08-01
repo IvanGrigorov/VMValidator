@@ -13,9 +13,9 @@ use RMValidator\Attributes\Base\BaseAttribute;
 final class RequiredAttribute extends BaseAttribute implements IAttribute
 {
 
-    public function __construct(protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false)
+    public function __construct(protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null)
     {
-        parent::__construct($errorMsg, $customName, $nullable);
+        parent::__construct($errorMsg, $customName, $nullable, $name);
     }
 
     public function validate(mixed $value) : void
