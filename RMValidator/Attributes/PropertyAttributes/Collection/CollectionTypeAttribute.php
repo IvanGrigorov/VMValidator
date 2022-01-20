@@ -7,15 +7,16 @@ use RMValidator\Exceptions\NotNullableException;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Exceptions\CollectionException;
 use RMValidator\Attributes\Base\BaseAttribute;
+use RMValidator\Enums\SeverityEnum;
 use RMValidator\Exceptions\CollectionTypeException;
 use RMValidator\Exceptions\EmptyCollectionException;
 
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS_CONSTANT | Attribute::TARGET_PARAMETER)]
 final class CollectionTypeAttribute extends BaseAttribute implements IAttribute
 {
-    public function __construct(private string $collectionType, private bool $isEmptyValid = true, protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null)
+    public function __construct(private string $collectionType, private bool $isEmptyValid = true, protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
     {
-        parent::__construct($errorMsg, $customName, $nullable, $name);
+        parent::__construct($errorMsg, $customName, $nullable, $name, $severity);
     }
 
     public function validate(mixed $value) : void

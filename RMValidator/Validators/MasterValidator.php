@@ -9,6 +9,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Attributes\Base\IProfileAttribute;
+use RMValidator\Enums\SeverityEnum;
 use RMValidator\Enums\ValidationOrderEnum;
 use RMValidator\Exceptions\OrException;
 use RMValidator\Exceptions\ValidationMethodException;
@@ -68,13 +69,11 @@ final class MasterValidator {
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
                     $attributeName = end($attributeNameSplitted);
-                    throw new ValidationPropertyException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $propertyName,
-                                                          $attributeName,
-                                                          ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+                    MasterValidator::returnFailedOutput($validationAttribute, $propertyName, $attributeName, $e, false);
                 }
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
-                throw new OrException($propertyName);
+                MasterValidator::returnFailedOutput(null, $propertyName, '', null, true);
             }
         }
     }
@@ -105,13 +104,11 @@ final class MasterValidator {
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
                     $attributeName = end($attributeNameSplitted);
-                    throw new ValidationPropertyException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $constantName,
-                                                          $attributeName,
-                                                          ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+                    MasterValidator::returnFailedOutput($validationAttribute, $constantName, $attributeName, $e, false);
                 }
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
-                throw new OrException($constantName);
+                MasterValidator::returnFailedOutput(null, $constantName, '', null, true);
             }
         }
     }
@@ -158,13 +155,11 @@ final class MasterValidator {
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
                     $attributeName = end($attributeNameSplitted);
-                    throw new ValidationMethodException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $methodName,
-                                                        $attributeName,
-                                                        ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+                    MasterValidator::returnFailedOutput($validationAttribute, $methodName, $attributeName, $e, false);
                 }
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
-                throw new OrException($methodName);
+                MasterValidator::returnFailedOutput(null, $methodName, '', null, true);
             }
         }
     }
@@ -180,5 +175,67 @@ final class MasterValidator {
             }
         }
         return $failedValidations != count($orAttributes);
+    }
+
+    private static function returnFailedOutput(?object $validationAttribute, string $vlidatedItemName, string  $attributeName, ?Exception $e, bool $isOrAttribute) {
+        switch ($validationAttribute->getSeverity()) {
+            case SeverityEnum::NOTICE:
+            case SeverityEnum::WARNING:
+                trigger_error("Property: " . $vlidatedItemName . " Attribute: ".  $attributeName. ' Cause:'. $e->getMessage(), $validationAttribute->getSeverity());
+                break;
+            default:
+             if($isOrAttribute) {
+                throw new OrException($vlidatedItemName);
+             } 
+            throw new ValidationPropertyException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $vlidatedItemName,
+                                                    $attributeName,
+                                                    ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+        }
+    }
+
+    public static function debug(string $reflection) {
+        $reflectionClass = new ReflectionClass($reflection);
+        $methods = $reflectionClass->getMethods();
+        $properties = $reflectionClass->getProperties();
+        $constants = $reflectionClass->getConstants();
+    
+    
+        var_dump($properties);
+    
+        print_r("\nPROPERTIES\n===================\n");
+    
+    
+        foreach ($properties as $property) {
+            $reflectionProperty = new ReflectionProperty($reflection, $property->getName());
+            $reflectionProperty->setAccessible(true);
+            $attributes = $reflectionProperty->getAttributes();
+            foreach ($attributes as $attribute) {
+                print_r($attribute->getName() . ':');
+                print_r($attribute->getArguments());        }
+        }
+    
+        print_r("\n\METHODS\n===================\n");
+    
+    
+        foreach ($methods as $method) {
+            $reflectionMethod = new ReflectionMethod($reflection, $method->getName());
+            $reflectionMethod->setAccessible(true);
+            $attributes = $reflectionMethod->getAttributes();
+            foreach ($attributes as $attribute) {
+                print_r($attribute->getName() . ':');
+                print_r($attribute->getArguments());        }
+        }
+    
+        print_r("\n\CONSTANTS\n===================\n");
+    
+    
+        foreach ($constants as $key => $constant) {
+            $reflectionConstant = new ReflectionClassConstant($reflection, $key);
+            $attributes = $reflectionConstant->getAttributes();
+            foreach ($attributes as $attribute) {
+                print_r($attribute->getName() . ':');
+                print_r($attribute->getArguments());
+            }
+        }
     }
 }

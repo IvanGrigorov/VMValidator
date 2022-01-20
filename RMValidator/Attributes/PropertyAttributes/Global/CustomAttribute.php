@@ -7,6 +7,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Attributes\Base\BaseAttribute;
+use RMValidator\Enums\SeverityEnum;
 use RMValidator\Exceptions\CustomPropertyException;
 use RMValidator\Exceptions\MethodDoesNotExistException;
 
@@ -20,9 +21,9 @@ final class CustomAttribute extends BaseAttribute implements IAttribute
         private array $args,
         protected ?string $errorMsg = null,
         protected ?string $customName = null,
-        protected ?bool $nullable = false, protected ?string $name = null)
+        protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
     {
-        parent::__construct($errorMsg, $customName, $nullable, $name);
+        parent::__construct($errorMsg, $customName, $nullable, $name, $severity);
     }
 
     public function validate(mixed $value) : void

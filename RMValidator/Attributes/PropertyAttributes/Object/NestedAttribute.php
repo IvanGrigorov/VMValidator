@@ -6,6 +6,7 @@ use Attribute;
 use RMValidator\Exceptions\NotNullableException;
 use RMValidator\Attributes\Base\IAttribute;
 use RMValidator\Attributes\Base\BaseAttribute;
+use RMValidator\Enums\SeverityEnum;
 use RMValidator\Enums\ValidationOrderEnum;
 use RMValidator\Exceptions\ObjectException;
 use RMValidator\Options\OptionsModel;
@@ -20,9 +21,9 @@ final class NestedAttribute extends BaseAttribute implements IAttribute
         protected array $excludedProperties = [],
         protected array $orAttributes = [],
         protected ?string $errorMsg = null, 
-        protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null)
+        protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
     {
-        parent::__construct($errorMsg, $customName, $nullable, $name);
+        parent::__construct($errorMsg, $customName, $nullable, $name, $severity);
     }
 
     public function validate(mixed $value) : void

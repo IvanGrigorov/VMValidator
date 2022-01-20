@@ -111,6 +111,9 @@ In what order to validate the classes (methods or properties first),  and what t
  - [x] Memory and time profiling
  - [x] Custom error messages
  - [x] Custom property and method names for the exceptions
+ - [x] Severity levels
+ - [x] Debug explorer
+
 
 ### *The custom validation should be declared as static in a validation class
 ```php
@@ -142,6 +145,21 @@ You can pass additional arguments to use in the validation function, but the fir
     MasterValidator::validate($test, new OptionsModel(orAttributes: ['orOne', 'orTwo']));
 
 ```
+
+### Severity
+Add option to make the failed validation throw NOTICE|WARNING|ERROR
+```
+    #[RangeAttribute(from:10, to:30, severity: SeverityEnum::ERROR)]
+
+```
+
+### Debugging
+Add option to display all validations per class
+```
+    MasterValidator::debug(<ClassToDebug>::class);
+```
+
+
 # Support
 
  - Request a new validation
