@@ -2,6 +2,7 @@
 
 namespace RMValidator\Options;
 
+use RMValidator\Enums\SeverityEnum;
 use RMValidator\Enums\ValidationOrderEnum;
 
 final class OptionsModel {
@@ -9,7 +10,8 @@ final class OptionsModel {
     public function __construct(private array $orderOfValidation = [ValidationOrderEnum::PROPERTIES, ValidationOrderEnum::METHODS, ValidationOrderEnum::CONSTANTS],
                                 private array $excludedMethods = [],
                                 private array $excludedProperties = [],
-                                private array $orAttributes = [])
+                                private array $orAttributes = [],
+                                private string $globalSeverityLevel = SeverityEnum::ERROR)
     {}
 
     public function getOrderOfValidation() : array {
@@ -26,5 +28,9 @@ final class OptionsModel {
 
     public function getOrAttributes() : array {
         return $this->orAttributes;
+    }
+
+    public function getGlobalSeverityLevel() : int {
+        return $this->globalSeverityLevel;
     }
 }

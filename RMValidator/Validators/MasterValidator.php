@@ -28,13 +28,13 @@ final class MasterValidator {
         foreach($optionsModel->getOrderOfValidation() as $order) {
             switch($order) {
                 case ValidationOrderEnum::METHODS:
-                    MasterValidator::validateMethods($methods, $className, $target, $optionsModel->getExcludedMethods(), $passedOptionsModel->getOrAttributes());
+                    MasterValidator::validateMethods($methods, $className, $target, $optionsModel->getExcludedMethods(), $passedOptionsModel->getOrAttributes(), $passedOptionsModel->getGlobalSeverityLevel());
                     break;
                 case ValidationOrderEnum::PROPERTIES:
-                    MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes());
+                    MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes(), $passedOptionsModel->getGlobalSeverityLevel());
                     break;
                 case ValidationOrderEnum::CONSTANTS:
-                    MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes());
+                    MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes(), $passedOptionsModel->getGlobalSeverityLevel());
                     break;
 
             }
@@ -42,7 +42,7 @@ final class MasterValidator {
 
     }
 
-    private static function validateProperties(array $properties, string $className, object $target, array $excludedProperties, array $orAttributes) {
+    private static function validateProperties(array $properties, string $className, object $target, array $excludedProperties, array $orAttributes, int $getGlobalSeverityLevel) {
         $orAttributesToValidate = [];
         foreach ($properties as $property) {
             $propertyName = $property->getName();
@@ -69,16 +69,16 @@ final class MasterValidator {
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
                     $attributeName = end($attributeNameSplitted);
-                    MasterValidator::returnFailedOutput($validationAttribute, $propertyName, $attributeName, $e, false);
+                    MasterValidator::returnFailedOutput($validationAttribute, $propertyName, $attributeName, $e, false, $getGlobalSeverityLevel);
                 }
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
-                MasterValidator::returnFailedOutput(null, $propertyName, '', null, true);
+                MasterValidator::returnFailedOutput(null, $propertyName, '', null, true, $getGlobalSeverityLevel);
             }
         }
     }
 
-    private static function validateConstants(array $constants, string $className, object $target, array $excludedProperties, array $orAttributes) {
+    private static function validateConstants(array $constants, string $className, object $target, array $excludedProperties, array $orAttributes, int $getGlobalSeverityLevel) {
         $orAttributesToValidate = [];
         foreach ($constants as $key => $value) {
             $constantName = $key;
@@ -104,16 +104,16 @@ final class MasterValidator {
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
                     $attributeName = end($attributeNameSplitted);
-                    MasterValidator::returnFailedOutput($validationAttribute, $constantName, $attributeName, $e, false);
+                    MasterValidator::returnFailedOutput($validationAttribute, $constantName, $attributeName, $e, false, $getGlobalSeverityLevel);
                 }
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
-                MasterValidator::returnFailedOutput(null, $constantName, '', null, true);
+                MasterValidator::returnFailedOutput(null, $constantName, '', null, true, $getGlobalSeverityLevel);
             }
         }
     }
 
-    private static function validateMethods(array $methods, string $className, object $target, array $excludedMethods, array $orAttributes) {
+    private static function validateMethods(array $methods, string $className, object $target, array $excludedMethods, array $orAttributes, int $getGlobalSeverityLevel) {
         $orAttributesToValidate = [];
         foreach ($methods as $method) {
             $methodName = $method->getName();
@@ -155,11 +155,11 @@ final class MasterValidator {
                 catch(Exception $e) {
                     $attributeNameSplitted = explode(DIRECTORY_SEPARATOR, $attribute->getName());
                     $attributeName = end($attributeNameSplitted);
-                    MasterValidator::returnFailedOutput($validationAttribute, $methodName, $attributeName, $e, false);
+                    MasterValidator::returnFailedOutput($validationAttribute, $methodName, $attributeName, $e, false, $getGlobalSeverityLevel);
                 }
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
-                MasterValidator::returnFailedOutput(null, $methodName, '', null, true);
+                MasterValidator::returnFailedOutput(null, $methodName, '', null, true, $getGlobalSeverityLevel);
             }
         }
     }
@@ -177,19 +177,29 @@ final class MasterValidator {
         return $failedValidations != count($orAttributes);
     }
 
-    private static function returnFailedOutput(?object $validationAttribute, string $vlidatedItemName, string  $attributeName, ?Exception $e, bool $isOrAttribute) {
-        switch ($validationAttribute->getSeverity()) {
-            case SeverityEnum::NOTICE:
-            case SeverityEnum::WARNING:
-                trigger_error("Property: " . $vlidatedItemName . " Attribute: ".  $attributeName. ' Cause:'. $e->getMessage(), $validationAttribute->getSeverity());
-                break;
-            default:
-             if($isOrAttribute) {
-                throw new OrException($vlidatedItemName);
-             } 
-            throw new ValidationPropertyException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $vlidatedItemName,
-                                                    $attributeName,
-                                                    ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+    private static function returnFailedOutput(?object $validationAttribute, string $vlidatedItemName, string  $attributeName, ?Exception $e, bool $isOrAttribute, int $getGlobalSeverityLevel) {
+        if($isOrAttribute) {
+            throw new OrException($vlidatedItemName);
+            switch ($getGlobalSeverityLevel) {
+                case SeverityEnum::NOTICE:
+                case SeverityEnum::WARNING:
+                    trigger_error("Property: " . $vlidatedItemName . " Attribute: ".  $attributeName. ' Cause:'. $e->getMessage(), $validationAttribute->getSeverity());
+                    break;
+                default:
+                    throw new OrException($vlidatedItemName);
+            }
+        }
+        else {
+            switch ($validationAttribute->getSeverity()) {
+                case SeverityEnum::NOTICE:
+                case SeverityEnum::WARNING:
+                    trigger_error("Property: " . $vlidatedItemName . " Attribute: ".  $attributeName. ' Cause:'. $e->getMessage(), $validationAttribute->getSeverity());
+                    break;
+                default:
+                    throw new ValidationPropertyException(($validationAttribute->getCustomName()) ? $validationAttribute->getCustomName() : $vlidatedItemName,
+                                                        $attributeName,
+                                                        ($validationAttribute->getCustomMessage()) ? $validationAttribute->getCustomMessage() : $e->getMessage());
+            }
         }
     }
 
