@@ -208,42 +208,38 @@ final class MasterValidator {
         $methods = $reflectionClass->getMethods();
         $properties = $reflectionClass->getProperties();
         $constants = $reflectionClass->getConstants();
-    
-    
-        var_dump($properties);
-    
+
         print_r("\nPROPERTIES\n===================\n");
-    
-    
+
         foreach ($properties as $property) {
             $reflectionProperty = new ReflectionProperty($reflection, $property->getName());
             $reflectionProperty->setAccessible(true);
             $attributes = $reflectionProperty->getAttributes();
             foreach ($attributes as $attribute) {
-                print_r($attribute->getName() . ':');
-                print_r($attribute->getArguments());        }
+                print_r($attribute->getName() . ':'.PHP_EOL);
+                print_r($attribute->getArguments());  
+           }
         }
-    
-        print_r("\n\METHODS\n===================\n");
-    
-    
+
+        print_r("\nMETHODS\n===================\n");
+
         foreach ($methods as $method) {
             $reflectionMethod = new ReflectionMethod($reflection, $method->getName());
             $reflectionMethod->setAccessible(true);
             $attributes = $reflectionMethod->getAttributes();
             foreach ($attributes as $attribute) {
-                print_r($attribute->getName() . ':');
-                print_r($attribute->getArguments());        }
+                print_r($attribute->getName() . ':'.PHP_EOL);
+                print_r($attribute->getArguments());        
+            }
         }
-    
-        print_r("\n\CONSTANTS\n===================\n");
-    
-    
+
+        print_r("\nCONSTANTS\n===================\n");
+
         foreach ($constants as $key => $constant) {
             $reflectionConstant = new ReflectionClassConstant($reflection, $key);
             $attributes = $reflectionConstant->getAttributes();
             foreach ($attributes as $attribute) {
-                print_r($attribute->getName() . ':');
+                print_r($attribute->getName() . ':'.PHP_EOL);
                 print_r($attribute->getArguments());
             }
         }
