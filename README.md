@@ -116,6 +116,7 @@ In what order to validate the classes (methods or properties first),  and what t
  - [x] Custom property and method names for the exceptions
  - [x] Severity levels
  - [x] Debug explorer
+ - [x] Callback execution*
 
 
 ### *The custom validation should be declared as static in a validation class
@@ -148,6 +149,13 @@ You can pass additional arguments to use in the validation function, but the fir
     MasterValidator::validate($test, new OptionsModel(orAttributes: ['orOne', 'orTwo']));
 
 ```
+
+### *Callback execution
+
+Call backs are executed when the validation does not trigger and Exception (based on SEVERITY_LEVEL)
+
+```$forceCallback``` can be used and has an effect only with EXCEPTION_SEVERITY_LEVEL to force callback after an EXCEPTION trigger
+
 
 ### Severity
 Add option to make the failed validation throw NOTICE|WARNING|ERROR

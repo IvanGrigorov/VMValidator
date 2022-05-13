@@ -18,25 +18,40 @@ use RMValidator\Options\OptionsModel;
 
 final class MasterValidator {
 
-    public static function validate(object $target, OptionsModel $passedOptionsModel = null) {
+    public static function validate(object $target, OptionsModel $passedOptionsModel = null, callable $callback = null, $forceCallback = false) {
         $optionsModel = (empty($passedOptionsModel)) ? new OptionsModel() : $passedOptionsModel;
+        if (count($optionsModel->getOrAttributes()) != count(array_unique($optionsModel->getOrAttributes()))) {
+            throw new Exception("There is a duplicate OR attribute, the array of the OR attributes must be unique");
+        }
         $className = get_class($target);
         $reflectionClass = new ReflectionClass($className);
         $methods = $reflectionClass->getMethods();
         $properties = $reflectionClass->getProperties();
         $constants = $reflectionClass->getConstants();
-        foreach($optionsModel->getOrderOfValidation() as $order) {
-            switch($order) {
-                case ValidationOrderEnum::METHODS:
-                    MasterValidator::validateMethods($methods, $className, $target, $optionsModel->getExcludedMethods(), $passedOptionsModel->getOrAttributes(), $passedOptionsModel->getGlobalSeverityLevel());
-                    break;
-                case ValidationOrderEnum::PROPERTIES:
-                    MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes(), $passedOptionsModel->getGlobalSeverityLevel());
-                    break;
-                case ValidationOrderEnum::CONSTANTS:
-                    MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties(), $passedOptionsModel->getOrAttributes(), $passedOptionsModel->getGlobalSeverityLevel());
-                    break;
-
+        try {
+            foreach($optionsModel->getOrderOfValidation() as $order) {
+                switch($order) {
+                    case ValidationOrderEnum::METHODS:
+                        MasterValidator::validateMethods($methods, $className, $target, $optionsModel->getExcludedMethods(), $optionsModel->getOrAttributes(), $optionsModel->getGlobalSeverityLevel());
+                        break;
+                    case ValidationOrderEnum::PROPERTIES:
+                        MasterValidator::validateProperties($properties, $className, $target, $optionsModel->getExcludedProperties(), $optionsModel->getOrAttributes(), $optionsModel->getGlobalSeverityLevel());
+                        break;
+                    case ValidationOrderEnum::CONSTANTS:
+                        MasterValidator::validateConstants($constants, $className, $target, $optionsModel->getExcludedProperties(), $optionsModel->getOrAttributes(), $optionsModel->getGlobalSeverityLevel());
+                        break;
+                }
+            }
+            if (!$forceCallback && !is_null($callback)) {
+                $callback();
+            }
+        }
+        catch(Exception $e) {
+            throw $e;
+        }
+        finally {
+            if ($forceCallback && !is_null($callback)) {
+                $callback();
             }
         }
 
