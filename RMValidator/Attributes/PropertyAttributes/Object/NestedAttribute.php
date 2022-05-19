@@ -21,7 +21,7 @@ final class NestedAttribute extends BaseAttribute implements IAttribute
         protected array $excludedProperties = [],
         protected array $orAttributes = [],
         protected ?string $errorMsg = null, 
-        protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
+        protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?int $severity = SeverityEnum::ERROR)
     {
         parent::__construct($errorMsg, $customName, $nullable, $name, $severity);
     }

@@ -89,6 +89,7 @@ final class MasterValidator {
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
                 MasterValidator::returnFailedOutput(null, $propertyName, '', null, true, $getGlobalSeverityLevel);
+                break;
             }
         }
     }
@@ -124,6 +125,7 @@ final class MasterValidator {
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
                 MasterValidator::returnFailedOutput(null, $constantName, '', null, true, $getGlobalSeverityLevel);
+                break;
             }
         }
     }
@@ -175,6 +177,7 @@ final class MasterValidator {
             }
             if (count($orAttributesToValidate) && !MasterValidator::validateOrAttributes($orAttributesToValidate)) {
                 MasterValidator::returnFailedOutput(null, $methodName, '', null, true, $getGlobalSeverityLevel);
+                break;
             }
         }
     }
@@ -194,11 +197,10 @@ final class MasterValidator {
 
     private static function returnFailedOutput(?object $validationAttribute, string $vlidatedItemName, string  $attributeName, ?Exception $e, bool $isOrAttribute, int $getGlobalSeverityLevel) {
         if($isOrAttribute) {
-            throw new OrException($vlidatedItemName);
             switch ($getGlobalSeverityLevel) {
                 case SeverityEnum::NOTICE:
                 case SeverityEnum::WARNING:
-                    trigger_error("Property: " . $vlidatedItemName . " Attribute: ".  $attributeName. ' Cause:'. $e->getMessage(), $validationAttribute->getSeverity());
+                    trigger_error("Or attribute failed for class item: ". $vlidatedItemName);
                     break;
                 default:
                     throw new OrException($vlidatedItemName);

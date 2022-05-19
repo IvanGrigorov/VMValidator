@@ -6,7 +6,7 @@ use RMValidator\Enums\SeverityEnum;
 
 abstract class BaseAttribute implements IAttribute {
 
-    public function __construct(protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
+    public function __construct(protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?int $severity = SeverityEnum::ERROR)
     {
 
     }

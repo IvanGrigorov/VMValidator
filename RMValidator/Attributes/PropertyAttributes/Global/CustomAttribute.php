@@ -21,7 +21,7 @@ final class CustomAttribute extends BaseAttribute implements IAttribute
         private array $args,
         protected ?string $errorMsg = null,
         protected ?string $customName = null,
-        protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
+        protected ?bool $nullable = false, protected ?string $name = null, protected ?int $severity = SeverityEnum::ERROR)
     {
         parent::__construct($errorMsg, $customName, $nullable, $name, $severity);
     }

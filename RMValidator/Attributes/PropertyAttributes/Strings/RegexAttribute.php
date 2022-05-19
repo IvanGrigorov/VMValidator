@@ -15,7 +15,7 @@ use RMValidator\Enums\SeverityEnum;
 final class RegexAttribute extends BaseAttribute implements IAttribute
 {
 
-    public function __construct(public string $regex, protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?string $severity = SeverityEnum::ERROR)
+    public function __construct(public string $regex, protected ?string $errorMsg = null, protected ?string $customName = null, protected ?bool $nullable = false, protected ?string $name = null, protected ?int $severity = SeverityEnum::ERROR)
     {
         parent::__construct($errorMsg, $customName, $nullable, $name, $severity);
     }
