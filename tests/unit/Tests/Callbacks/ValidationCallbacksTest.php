@@ -3,6 +3,7 @@
 
 use PHPUnit\Framework\TestCase;
 use RMValidator\Attributes\PropertyAttributes\Numbers\RangeAttribute;
+use RMValidator\Callables\CallableConfig;
 use RMValidator\Validators\MasterValidator;
 
 class ValidationCallbacksTest extends TestCase {
@@ -10,22 +11,24 @@ class ValidationCallbacksTest extends TestCase {
      /**
     * @doesNotPerformAssertions
     */
-    public function testMasterValidator_shouldExecuteCallbackOnSuccessfullValidation()
+    public function testMasterValidator_successCallbackShouldExecuteCallbackOnSuccessfullValidation()
     {
         $controll = 0;
-        MasterValidator::validate(new SuccessfullValidityTest(), null, function() use (&$controll) {
+        $callableConfig = new CallableConfig(function() use (&$controll) {
             $controll++;
-        });
+        }, null, null);
+        MasterValidator::validate(new SuccessfullValidityTest(), null, $callableConfig);
         $this->assertEquals(1, $controll);
     }
 
-    public function testMasterValidator_shouldNotExecuteCallbackOnUnuccessfullValidation()
+    public function testMasterValidator_successCallbackShouldNotExecuteCallbackOnUnuccessfullValidation()
     {
         $controll = 0;
+        $callableConfig = new CallableConfig(function() use (&$controll) {
+            $controll++;
+        }, null, null);
         try {
-            MasterValidator::validate(new UnsuccessfullValidityTest(), null, function() use (&$controll) {
-                $controll++;
-            });
+            MasterValidator::validate(new UnsuccessfullValidityTest(), null, $callableConfig);
         }
         catch(Exception $e) {
             $this->assertEquals(0, $controll);
@@ -33,13 +36,54 @@ class ValidationCallbacksTest extends TestCase {
         
     }
 
-    public function testMasterValidator_shouldExecuteCallbackOnUnuccessfullValidationButForce()
+    public function testMasterValidator_failuireCallbackShouldNotExecuteCallbackOnSuccessfullValidation()
     {
         $controll = 0;
+        $callableConfig = new CallableConfig(null, function() use (&$controll) {
+            $controll++;
+        }, null);
+        MasterValidator::validate(new SuccessfullValidityTest(), null, $callableConfig);
+        $this->assertEquals(0, $controll);
+    }
+
+    public function testMasterValidator_failuireCallbackShouldExecuteCallbackOnUnuccessfullValidation()
+    {
+        $controll = 0;
+        $callableConfig = new CallableConfig(null, function() use (&$controll) {
+            $controll++;
+        }, null);
         try {
-            MasterValidator::validate(new UnsuccessfullValidityTest(), null, function() use (&$controll) {
-                $controll++;
-            }, true);
+            MasterValidator::validate(new UnsuccessfullValidityTest(), null, $callableConfig);
+        }
+        catch(Exception $e) {
+            $this->assertEquals(1, $controll);
+        }
+        
+    }
+
+    public function testMasterValidator_forcedCallbackShouldExecuteCallbackOnSuccessfullValidationButForce()
+    {
+        $controll = 0;
+        $callableConfig = new CallableConfig(null, null, function() use (&$controll) {
+            $controll++;
+        });
+        try {
+            MasterValidator::validate(new UnsuccessfullValidityTest(), null, $callableConfig);
+        }
+        catch(Exception $e) {
+            $this->assertEquals(1, $controll);
+        }
+        
+    }
+
+    public function testMasterValidator_forcedCallbackShouldExecuteCallbackOnUnuccessfullValidationButForce()
+    {
+        $controll = 0;
+        $callableConfig = new CallableConfig(null, null, function() use (&$controll) {
+            $controll++;
+        });
+        try {
+            MasterValidator::validate(new UnsuccessfullValidityTest(), null, $callableConfig);
         }
         catch(Exception $e) {
             $this->assertEquals(1, $controll);

@@ -152,9 +152,13 @@ You can pass additional arguments to use in the validation function, but the fir
 
 ### *Callback execution
 
-Callbacks are executed when the validation does not trigger an Exception (based on SEVERITY_LEVEL)
+```$succsessCallable``` is executed on successfull validation
 
-```$forceCallback``` can be used and has an effect only with EXCEPTION_SEVERITY_LEVEL to force callback after an EXCEPTION trigger
+```$failiureCallable``` is executed on unsuccessfull validation
+
+```$forcedCallable``` is executed on successfull AND unsuccessfull validation
+
+
 
 
 ### Severity
