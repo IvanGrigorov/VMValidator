@@ -152,9 +152,9 @@ You can pass additional arguments to use in the validation function, but the fir
 
 ### *Callback execution
 
-```$succsessCallable``` is executed on successfull validation
+```$successCallable``` is executed on successfull validation
 
-```$failiureCallable``` is executed on unsuccessfull validation
+```$failureCallable``` is executed on unsuccessfull validation
 
 ```$forcedCallable``` is executed on successfull AND unsuccessfull validation
 
