@@ -1,5 +1,6 @@
 # VMValidator
 
+[![VMValidator test check](https://github.com/IvanGrigorov/VMValidator/actions/workflows/php.yml/badge.svg)](https://github.com/IvanGrigorov/VMValidator/actions/workflows/php.yml)
 
 ![VMValidator](https://user-images.githubusercontent.com/10940601/150609303-c7566864-06ce-402b-90c8-85cfcb70e55c.jpg)
 
