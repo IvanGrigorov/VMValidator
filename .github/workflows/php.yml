@@ -1,4 +1,4 @@
-name: PHP Composer
+name: VMValidator test check
 
 on:
   push:
