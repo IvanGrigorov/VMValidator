@@ -25,7 +25,7 @@ jobs:
       with:
         php-version: '8.1'
         ini-values: pcov.directory=api #optional, see above for usage.
-        coverage: pcov
+        coverage: xdebug
 
     - name: Cache Composer packages
       id: composer-cache
