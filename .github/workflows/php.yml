@@ -1,33 +1,39 @@
-on:
-  pull_request:
-    branches-ignore: gh-pages
-  push:
-    branches-ignore: gh-pages
+name: PHP Composer
 
-name: Codeception Tests
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: $
-          extensions: curl, mbstring, openssl, pdo, pdo_sqlite
-          ini-values: memory_limit=-1, date.timezone='UTC'
-          coverage: xdebug
-          tools: composer:v2
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction --no-suggest
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
 
-      - name: Run tests
-        run: php vendor/bin/codecept run
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    - name: Run test suite
+      run: ./vendor/bin/codecept run unit
