@@ -30,5 +30,10 @@
         "codeception/codeception": "^4.1",
         "codeception/module-phpbrowser": "^1.0.0",
         "codeception/module-asserts": "^1.0.0"
+    },
+    "scripts": {
+        "test": [
+            ".\\vendor\\bin\\codecept run unit"
+        ]
     }
 }
