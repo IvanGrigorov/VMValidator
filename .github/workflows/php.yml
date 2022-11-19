@@ -20,6 +20,15 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: $
+        extensions: curl, mbstring, openssl, pdo, pdo_sqlite
+        ini-values: memory_limit=-1, date.timezone='UTC'
+        coverage: xdebug
+        tools: composer:v2
+
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
@@ -35,5 +44,5 @@ jobs:
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    - name: Run test suite
-      run: composer test
+    - name: Run tests
+      run: php vendor/bin/codecept run
