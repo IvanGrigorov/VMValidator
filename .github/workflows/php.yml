@@ -37,3 +37,6 @@ jobs:
 
     - name: Run test suite
       run: ./vendor/bin/codecept run unit
+
+    - name: phpunit-coverage-badge
+      uses: timkrase/phpunit-coverage-badge@v1.2.0
