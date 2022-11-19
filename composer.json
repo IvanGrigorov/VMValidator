@@ -33,7 +33,7 @@
     },
     "scripts": {
         "test": [
-            ".\\vendor\\bin\\codecept run unit"
+            "php vendor\\bin\\codecept run unit -c .\\codeception.yml"
         ]
     }
 }

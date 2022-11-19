@@ -36,4 +36,4 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run test suite
-      run: php vendor\bin\codecept run unit -c .\codeception.yml
+      run: composer test
