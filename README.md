@@ -103,10 +103,10 @@ In what order to validate the classes (methods or properties first),  and what t
 # Extras
 
  - [x] Lots of validations
- - [x] Supprots also nested object validation
- - [x] Supprots also collection item types and collection item validations
- - [x] Supprots also custom validations*
- - [x] Supprots also or validations*
+ - [x] Supports also nested object validation
+ - [x] Supports also collection item types and collection item validations
+ - [x] Supports also custom validations*
+ - [x] Supports also or validations*
  - [x] Nullable check
  - [x] Repeatable validation attributes
  - [x] Works with private properties and methods
@@ -152,11 +152,11 @@ You can pass additional arguments to use in the validation function, but the fir
 
 ### *Callback execution
 
-```$succsessCallable``` is executed on successfull validation
+```$successCallable``` is executed on successful validation
 
-```$failiureCallable``` is executed on unsuccessfull validation
+```$failureCallable``` is executed on unsuccessful validation
 
-```$forcedCallable``` is executed on successfull AND unsuccessfull validation
+```$forcedCallable``` is executed on successful AND unsuccessful validation
 
 
 
